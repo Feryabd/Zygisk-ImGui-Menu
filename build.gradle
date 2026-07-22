@@ -8,11 +8,12 @@ idea.module {
 
 buildscript {
     repositories {
-        mavenCentral()
         google()
+        mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.4.2'
+        // PERBAIKAN UTAMA: Gunakan versi 7.4.2 agar kompatibel dengan SDK modern cloud
+        classpath 'com.android.tools.build:gradle:7.4.2' 
     }
 }
 
