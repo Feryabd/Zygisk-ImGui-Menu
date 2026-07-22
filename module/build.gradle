@@ -9,7 +9,7 @@ apply from: file(rootProject.file('module.gradle'))
 android {
     compileSdkVersion rootProject.ext.targetSdkVersion
     
-    // PERBAIKAN: Mengunci versi NDK secara tegas
+    // Mengunci versi NDK r26b murni
     ndkVersion "26.1.10909125"
 
     defaultConfig {
@@ -27,8 +27,8 @@ android {
     externalNativeBuild {
         cmake {
             path "src/main/cpp/CMakeLists.txt"
-            // Mengubah ke versi 3.22.1 yang sudah tersedia default di server runner r26b
-            version "3.22.1" 
+            // WAJIB KEMBALIKAN KE 3.18.1 AGAR SINKRON
+            version "3.18.1" 
         }
     }
     buildTypes {
