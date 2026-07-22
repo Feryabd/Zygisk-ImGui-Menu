@@ -7,10 +7,9 @@ apply plugin: 'com.android.library'
 apply from: file(rootProject.file('module.gradle'))
 
 android {
-    // Ambil nilai target SDK dari root proyek Anda
     compileSdkVersion rootProject.ext.targetSdkVersion
     
-    // PERBAIKAN UTAMA: Daftarkan versi NDK secara eksplisit di sini
+    // PERBAIKAN: Mengunci versi NDK secara tegas
     ndkVersion "26.1.10909125"
 
     defaultConfig {
@@ -19,8 +18,6 @@ android {
         externalNativeBuild {
             cmake {
                 arguments "-DMODULE_NAME:STRING=$moduleLibraryName"
-                // DELETE THIS IF NOT DEBUG BUILD
-                // cppFlags += "-DBIGSEX"
             }
         }
     }
@@ -30,7 +27,8 @@ android {
     externalNativeBuild {
         cmake {
             path "src/main/cpp/CMakeLists.txt"
-            version "3.18.1"
+            // Mengubah ke versi 3.22.1 yang sudah tersedia default di server runner r26b
+            version "3.22.1" 
         }
     }
     buildTypes {
@@ -38,7 +36,7 @@ android {
             minifyEnabled true
         }
     }
-}    
+}
 
 repositories {
     mavenLocal()
