@@ -12,15 +12,15 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        // PERBAIKAN UTAMA: Gunakan versi 7.4.2 agar kompatibel dengan SDK modern cloud
+        // Mencegah error NullPointerException pada SDK modern cloud
         classpath 'com.android.tools.build:gradle:7.4.2' 
     }
 }
 
 allprojects {
     repositories {
-        mavenCentral()
         google()
+        mavenCentral()
     }
 }
 
