@@ -26,11 +26,11 @@ jobs:
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3
 
-    # Memasang CMake versi 3.18.1 secara otomatis ke sistem SDK server cloud
-    - name: Install Android SDK Components (CMake & NDK)
+    # Memasang biner NDK r26b dan CMake yang sesuai dengan instruksi gradle
+    - name: Install Android SDK Components
       run: |
-        sdkmanager --install "cmake;3.18.1"
         sdkmanager --install "ndk;26.1.10909125"
+        sdkmanager --install "cmake;3.22.1"
 
     - name: Grant Execute Permission for Gradle
       run: chmod +x gradlew
