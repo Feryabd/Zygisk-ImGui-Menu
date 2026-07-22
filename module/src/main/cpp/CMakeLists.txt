@@ -6,7 +6,8 @@ endif ()
 
 project(${MODULE_NAME})
 
-set(CMAKE_CXX_STANDARD 20)
+# Menurunkan standar ke C++17 agar kompatibel dengan biner Android lama & mencegah crash tautan
+set(CMAKE_CXX_STANDARD 17)
 
 set(LINKER_FLAGS "-ffixed-x18 -Wl,--hash-style=both")
 set(C_FLAGS "-Werror=format -fdata-sections -ffunction-sections")
@@ -17,7 +18,6 @@ set(LINKER_FLAGS "${LINKER_FLAGS} -Wl,-exclude-libs,ALL -Wl,--gc-sections -Wl,--
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${C_FLAGS}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${C_FLAGS} ${CXX_FLAGS}")
-
 set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${LINKER_FLAGS}")
 
 include_directories(KittyMemory)
@@ -26,6 +26,7 @@ include_directories(Includes)
 include_directories(ImGui)
 include_directories(ImGui/backends)
 
+# Mendaftarkan semua file source inti tanpa menyertakan libcurl.a
 add_library(${MODULE_NAME}
         SHARED
         ImGui/imgui.cpp
@@ -45,17 +46,15 @@ add_library(${MODULE_NAME}
         hook.cpp
         )
 
-# Menautkan DobbyHook tanpa melibatkan libcurl.a yang memicu error
-set(DOBBY_LIB ${CMAKE_CURRENT_SOURCE_DIR}/libs/${CMAKE_ANDROID_ARCH_ABI}/libdobby.a)
-
+# PERBAIKAN: Menghapus DOBBY_LIB statis (.a) dan mengaitkannya ke library runtime dinamis bawaan sistem
 target_link_libraries(
         ${MODULE_NAME} 
         log
-        ${DOBBY_LIB}
         GLESv3
         GLESv2
         android
         EGL
+        dl # Menautkan dynamic linker agar fungsi DobbySymbolResolver tetap aktif
 )
 
 add_custom_command(TARGET ${MODULE_NAME} POST_BUILD
