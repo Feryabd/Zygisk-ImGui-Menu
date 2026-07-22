@@ -7,6 +7,10 @@ on:
     branches: [ "main" ]
   workflow_dispatch: 
 
+env:
+  # Menghilangkan warning Node.js di log GitHub Actions Anda
+  ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -26,11 +30,11 @@ jobs:
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3
 
-    # Memasang biner NDK r26b dan CMake yang sesuai dengan instruksi gradle
-    - name: Install Android SDK Components
+    # PERBAIKAN: Pasang CMake 3.18.1 agar sinkron 100% dengan build.gradle
+    - name: Install Android SDK Components (CMake & NDK)
       run: |
+        sdkmanager --install "cmake;3.18.1"
         sdkmanager --install "ndk;26.1.10909125"
-        sdkmanager --install "cmake;3.22.1"
 
     - name: Grant Execute Permission for Gradle
       run: chmod +x gradlew
