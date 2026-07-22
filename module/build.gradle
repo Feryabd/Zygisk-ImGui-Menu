@@ -7,7 +7,12 @@ apply plugin: 'com.android.library'
 apply from: file(rootProject.file('module.gradle'))
 
 android {
+    // Ambil nilai target SDK dari root proyek Anda
     compileSdkVersion rootProject.ext.targetSdkVersion
+    
+    // PERBAIKAN UTAMA: Daftarkan versi NDK secara eksplisit di sini
+    ndkVersion "26.1.10909125"
+
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
@@ -28,12 +33,12 @@ android {
             version "3.18.1"
         }
     }
-    buildTypes{
+    buildTypes {
         release {
             minifyEnabled true
         }
     }
-}
+}    
 
 repositories {
     mavenLocal()
