@@ -1,13 +1,12 @@
 cmake_minimum_required(VERSION 3.18.1)
 
 if (NOT DEFINED MODULE_NAME)
-    set(MODULE_NAME "Stardust_PG3D")
+    set(MODULE_NAME "Stardust_PG3D") # Pastikan nama modul Anda benar
 endif ()
 
 project(${MODULE_NAME})
 
-# Menurunkan standar ke C++17 agar kompatibel dengan biner Android lama & mencegah crash tautan
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 set(LINKER_FLAGS "-ffixed-x18 -Wl,--hash-style=both")
 set(C_FLAGS "-Werror=format -fdata-sections -ffunction-sections")
@@ -18,6 +17,7 @@ set(LINKER_FLAGS "${LINKER_FLAGS} -Wl,-exclude-libs,ALL -Wl,--gc-sections -Wl,--
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${C_FLAGS}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${C_FLAGS} ${CXX_FLAGS}")
+
 set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${LINKER_FLAGS}")
 
 include_directories(KittyMemory)
@@ -26,7 +26,6 @@ include_directories(Includes)
 include_directories(ImGui)
 include_directories(ImGui/backends)
 
-# Mendaftarkan semua file source inti tanpa menyertakan libcurl.a
 add_library(${MODULE_NAME}
         SHARED
         ImGui/imgui.cpp
@@ -46,17 +45,17 @@ add_library(${MODULE_NAME}
         hook.cpp
         )
 
-# PERBAIKAN: Menghapus DOBBY_LIB statis (.a) dan mengaitkannya ke library runtime dinamis bawaan sistem
+set(DOBBY_LIB ${CMAKE_CURRENT_SOURCE_DIR}/libs/${CMAKE_ANDROID_ARCH_ABI}/libdobby.a)
+set(CURL_LIB ${CMAKE_CURRENT_SOURCE_DIR}/libs/${CMAKE_ANDROID_ARCH_ABI}/libcurl.a)
+
 target_link_libraries(
-        ${MODULE_NAME} 
-        log
+        ${MODULE_NAME} log
+        ${DOBBY_LIB}
+        ${CURL_LIB}
         GLESv3
         GLESv2
         android
-        EGL
-        dl # Menautkan dynamic linker agar fungsi DobbySymbolResolver tetap aktif
-)
+        EGL  )
 
 add_custom_command(TARGET ${MODULE_NAME} POST_BUILD
         COMMAND ${CMAKE_STRIP} --strip-all --remove-section=.comment "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/lib${MODULE_NAME}.so")
-        
