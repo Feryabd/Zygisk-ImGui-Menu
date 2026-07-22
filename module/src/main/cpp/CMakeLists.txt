@@ -53,7 +53,7 @@ add_library(${MODULE_NAME}
         )
 
 set(DOBBY_LIB ${CMAKE_CURRENT_SOURCE_DIR}/libs/${CMAKE_ANDROID_ARCH_ABI}/libdobby.a)
-set(CURL_LIB ${CMAKE_CURRENT_SOURCE_DIR}/libs/${CMAKE_ANDROID_ARCH_ABI}/libcurl.a)
+# set(CURL_LIB ${CMAKE_CURRENT_SOURCE_DIR}/libs/${CMAKE_ANDROID_ARCH_ABI}/libcurl.a)
 find_library(log-lib log)
 find_library(egl EGL)
 find_library(android android)
