@@ -1,11 +1,11 @@
-name: Android CI (Zygisk ImGui Build)
+name: Android CI (Zygisk ImGui Fixed Build)
 
 on:
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
-  workflow_dispatch: # Opsi ini memunculkan tombol "Run workflow" untuk build manual
+  workflow_dispatch: 
 
 jobs:
   build:
@@ -16,6 +16,7 @@ jobs:
       uses: actions/checkout@v4
       with:
         submodules: recursive
+        fetch-depth: 0 # Memastikan seluruh riwayat file biner statis ikut terunduh
 
     - name: Set up JDK 17
       uses: actions/setup-java@v4
@@ -23,25 +24,28 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Setup Android SDK & NDK
+    - name: Setup Android SDK
       uses: android-actions/setup-android@v3
 
-    # Opsional: Memastikan Android NDK versi r25c/r26b terpasang (Zygisk membutuhkan NDK)
-    - name: Install Android NDK
+    # PERBAIKAN UTAMA: Upgrade versi NDK ke r26b (26.1.10909125) untuk kestabilan C++20
+    - name: Install Android NDK r26b
       run: |
-        sdkmanager --install "ndk;25.2.9519653"
+        sdkmanager --install "ndk;26.1.10909125"
+
+    # Mengatur variabel lingkungan lingkungan agar Gradle mendeteksi NDK r26b secara eksplisit
+    - name: Set NDK Path Environment
+      run: |
+        echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/26.1.10909125" >> $GITHUB_ENV
+        echo "ndk.dir=$ANDROID_HOME/ndk/26.1.10909125" >> local.properties
 
     - name: Grant Execute Permission for Gradle
       run: chmod +x gradlew
 
-    # Menjalankan perintah Gradle Task bawaan template fedes1to untuk merilis modul
     - name: Build Zygisk Module Package
-      run: ./gradlew :module:assembleRelease
+      run: ./gradlew :module:assembleRelease --stacktrace
 
-    # Mengunggah hasil kompilasi modul .zip agar bisa Anda unduh langsung
     - name: Upload Output Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: Zygisk-ImGui-Mod-Menu-Zip
+        name: Zygisk-ImGui-Stardust-Zip
         path: out/*.zip
-        
